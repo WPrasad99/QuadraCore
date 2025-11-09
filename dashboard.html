@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">☀️</div>
+                <span>QuadraCore</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-page="settings">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </button>
+            <button class="nav-item" data-page="reports">
+                <span class="nav-icon">📈</span>
+                <span>Reports</span>
+            </button>
+            <button class="nav-item" data-page="maintenance">
+                <span class="nav-icon">🔧</span>
+                <span>Maintenance</span>
+            </button>
+            <button class="nav-item" data-page="profile">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle">☰</button>
+                <h1 id="page-title">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <button class="header-btn search-btn">🔍</button>
+                <button class="header-btn notification-btn">🔔</button>
+                <button class="header-btn theme-toggle">🌙</button>
+                <button class="header-btn profile-btn">👤</button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Dashboard Page -->
+            <div class="page dashboard-page" id="dashboard">
+                <!-- Metric Cards -->
+                <div class="metrics-grid">
+                    <div class="metric-card blue">
+                        <h3>Total Output</h3>
+                        <div class="metric-value">24,580 kWh</div>
+                        <p class="metric-change">↑ 12.5% from last month</p>
+                    </div>
+                    <div class="metric-card green">
+                        <h3>Active Systems</h3>
+                        <div class="metric-value">8</div>
+                        <p class="metric-change">All operational</p>
+                    </div>
+                    <div class="metric-card orange">
+                        <h3>Efficiency Rate</h3>
+                        <div class="metric-value">94.2%</div>
+                        <p class="metric-change">↑ 2.1% from yesterday</p>
+                    </div>
+                    <div class="metric-card purple">
+                        <h3>Energy Saved</h3>
+                        <div class="metric-value">$3,420</div>
+                        <p class="metric-change">↑ 8.3% from last month</p>
+                    </div>
+                </div>
+
+                <!-- Daily Energy Production -->
+                <div class="card">
+                    <h2>Daily Energy Production</h2>
+                    <div class="energy-production-container">
+                        <div class="energy-circle-wrapper">
+                            <canvas id="energyCircle" width="200" height="200"></canvas>
+                            <div class="energy-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Peak Production:</span>
+                                    <span class="stat-value">5.2 kW</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Avg Production:</span>
+                                    <span class="stat-value">3.8 kW</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Duration:</span>
+                                    <span class="stat-value">8h 45m</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Forecast:</span>
+                                    <span class="stat-value">9.2 kWh</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <CHANGE> Added mini chart for hourly production trends -->
+                        <div class="hourly-trend">
+                            <h4>Hourly Production</h4>
+                            <canvas id="hourlyChart" width="300" height="120"></canvas>
+                            <div class="trend-labels">
+                                <span>6 AM</span>
+                                <span>12 PM</span>
+                                <span>6 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel Position Tracking -->
+                <div class="card">
+                    <h2>Panel Position Tracking</h2>
+                    <div class="panel-tracking-container">
+                        <canvas id="solarPanelCanvas" width="300" height="300"></canvas>
+                        <div class="panel-info">
+                            <div class="info-item">
+                                <span class="info-label">Current Angle:</span>
+                                <span class="info-value" id="currentAngle">109.9°</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Target Angle:</span>
+                                <span class="info-value" id="targetAngle">121.9°</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rotation Speed:</span>
+                                <span class="info-value" id="rotationSpeed">1.74°/min</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value status-active" id="panelStatus">● Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Analytics -->
+                <div class="card analytics-card">
+                    <div class="analytics-header">
+                        <h2>Real-time Analytics</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-period="7d">7D</button>
+                            <button class="filter-btn" data-period="30d">30D</button>
+                            <button class="filter-btn" data-period="90d">90D</button>
+                        </div>
+                    </div>
+                    <!-- <CHANGE> Real canvas-based chart instead of image -->
+                    <canvas id="analyticsChart" width="800" height="300"></canvas>
+                    <div class="chart-stats">
+                        <div class="stat">
+                            <span class="stat-name">Average</span>
+                            <span class="stat-num" id="avgEnergy">45.2 kWh</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-name">Peak</span>
+                            <span class="stat-num" id="peakEnergy">78.5 kWh</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-name">Total</span>
+                            <span class="stat-num" id="totalEnergy">1,245 kWh</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="card status-card">
+                    <h2>System Status</h2>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-icon motor">⚡</div>
+                            <div class="status-info">
+                                <h4>Motor</h4>
+                                <p class="status-badge good">● Good</p>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon sensors">📡</div>
+                            <div class="status-info">
+                                <h4>Sensors</h4>
+                                <p class="status-badge good">● Good</p>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon battery">🔋</div>
+                            <div class="status-info">
+                                <h4>Battery</h4>
+                                <p class="status-badge warning">● Warning</p>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon connection">🔗</div>
+                            <div class="status-info">
+                                <h4>Connection</h4>
+                                <p class="status-badge good">● Good</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <!-- <CHANGE> Added functional Settings page with detailed options -->
+            <div class="page settings-page" id="settings">
+                <div class="card">
+                    <h2>Settings</h2>
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3>System Settings</h3>
+                            <div class="setting-item">
+                                <label>Tracking Mode</label>
+                                <select>
+                                    <option>Automatic</option>
+                                    <option>Manual</option>
+                                    <option>Hybrid</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Update Frequency</label>
+                                <select>
+                                    <option>Every 5 minutes</option>
+                                    <option>Every 10 minutes</option>
+                                    <option>Every 30 minutes</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Temperature Threshold</label>
+                                <input type="number" value="45" min="20" max="70"> °C
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Notifications</h3>
+                            <div class="setting-item checkbox">
+                                <input type="checkbox" id="emailNotif" checked>
+                                <label for="emailNotif">Email Notifications</label>
+                            </div>
+                            <div class="setting-item checkbox">
+                                <input type="checkbox" id="smsNotif" checked>
+                                <label for="smsNotif">SMS Alerts</label>
+                            </div>
+                            <div class="setting-item checkbox">
+                                <input type="checkbox" id="pushNotif">
+                                <label for="pushNotif">Push Notifications</label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Maintenance</h3>
+                            <div class="setting-item">
+                                <label>Last Service Date</label>
+                                <input type="date" value="2024-10-15">
+                            </div>
+                            <div class="setting-item">
+                                <label>Next Service Due</label>
+                                <input type="date" value="2025-01-15">
+                            </div>
+                            <div class="setting-item">
+                                <label>Service Interval (Days)</label>
+                                <input type="number" value="90" min="30" max="365">
+                            </div>
+                        </div>
+
+                        <button class="save-btn">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <!-- <CHANGE> Added functional Reports page with data display -->
+            <div class="page reports-page" id="reports">
+                <div class="card">
+                    <h2>Reports</h2>
+                    <div class="reports-container">
+                        <div class="report-section">
+                            <h3>Monthly Report</h3>
+                            <div class="report-content">
+                                <p><strong>Total Energy Generated:</strong> 1,245 kWh</p>
+                                <p><strong>Average Daily Output:</strong> 40.2 kWh</p>
+                                <p><strong>Peak Output Day:</strong> November 8 - 78.5 kWh</p>
+                                <p><strong>System Uptime:</strong> 99.8%</p>
+                                <p><strong>Cost Saved:</strong> $2,180</p>
+                            </div>
+                        </div>
+
+                        <div class="report-section">
+                            <h3>Annual Projection</h3>
+                            <div class="report-content">
+                                <p><strong>Estimated Annual Output:</strong> 14,940 kWh</p>
+                                <p><strong>Annual Savings:</strong> $26,160</p>
+                                <p><strong>CO2 Reduction:</strong> 12.4 tons</p>
+                                <p><strong>ROI Timeline:</strong> 8.2 years</p>
+                            </div>
+                        </div>
+
+                        <div class="report-section">
+                            <h3>Performance Metrics</h3>
+                            <div class="report-content">
+                                <p><strong>Average Efficiency:</strong> 94.2%</p>
+                                <p><strong>Max Output Achieved:</strong> 5.8 kW</p>
+                                <p><strong>Avg Temperature:</strong> 42°C</p>
+                                <p><strong>System Failures:</strong> 0</p>
+                            </div>
+                        </div>
+
+                        <button class="download-btn">📥 Download Full Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Page -->
+            <!-- <CHANGE> Added functional Maintenance page with service details -->
+            <div class="page maintenance-page" id="maintenance">
+                <div class="card">
+                    <h2>Maintenance</h2>
+                    <div class="maintenance-container">
+                        <div class="maintenance-section">
+                            <h3>Scheduled Maintenance</h3>
+                            <div class="maintenance-item">
+                                <span class="maintenance-title">Panel Cleaning</span>
+                                <span class="maintenance-date">Due: November 20, 2024</span>
+                                <p class="maintenance-desc">Clean panels to maintain optimal efficiency</p>
+                            </div>
+                            <div class="maintenance-item">
+                                <span class="maintenance-title">System Inspection</span>
+                                <span class="maintenance-date">Due: December 15, 2024</span>
+                                <p class="maintenance-desc">Full system check and calibration</p>
+                            </div>
+                            <div class="maintenance-item">
+                                <span class="maintenance-title">Software Update</span>
+                                <span class="maintenance-date">Due: January 10, 2025</span>
+                                <p class="maintenance-desc">Install latest firmware updates</p>
+                            </div>
+                        </div>
+
+                        <div class="maintenance-section">
+                            <h3>Recent Services</h3>
+                            <div class="maintenance-item completed">
+                                <span class="maintenance-title">Sensor Calibration ✓</span>
+                                <span class="maintenance-date">Completed: October 15, 2024</span>
+                                <p class="maintenance-desc">All sensors recalibrated successfully</p>
+                            </div>
+                            <div class="maintenance-item completed">
+                                <span class="maintenance-title">Motor Service ✓</span>
+                                <span class="maintenance-date">Completed: September 20, 2024</span>
+                                <p class="maintenance-desc">Motor lubricated and tested</p>
+                            </div>
+                        </div>
+
+                        <button class="schedule-btn">📅 Schedule Service</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <!-- <CHANGE> Added functional Profile page with user details -->
+            <div class="page profile-page" id="profile">
+                <div class="card">
+                    <h2>Profile</h2>
+                    <div class="profile-container">
+                        <div class="profile-header">
+                            <div class="profile-avatar">👤</div>
+                            <div class="profile-info">
+                                <h3>John Anderson</h3>
+                                <p>System Administrator</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Account Information</h3>
+                            <div class="profile-item">
+                                <label>Email</label>
+                                <p>john.anderson@solarsync.com</p>
+                            </div>
+                            <div class="profile-item">
+                                <label>Phone</label>
+                                <p>+1 (555) 123-4567</p>
+                            </div>
+                            <div class="profile-item">
+                                <label>Member Since</label>
+                                <p>January 15, 2023</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>System Information</h3>
+                            <div class="profile-item">
+                                <label>Installation Address</label>
+                                <p>123 Solar Street, Energy City, EC 12345</p>
+                            </div>
+                            <div class="profile-item">
+                                <label>System Capacity</label>
+                                <p>6.5 kW</p>
+                            </div>
+                            <div class="profile-item">
+                                <label>Installation Date</label>
+                                <p>March 10, 2023</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Subscription</h3>
+                            <div class="profile-item">
+                                <label>Plan</label>
+                                <p>Premium Monitoring</p>
+                            </div>
+                            <div class="profile-item">
+                                <label>Status</label>
+                                <p class="status-active">● Active</p>
+                            </div>
+                            <div class="profile-item">
+                                <label>Renewal Date</label>
+                                <p>December 15, 2024</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-buttons">
+                            <button class="edit-btn">✏️ Edit Profile</button>
+                            <button class="logout-btn">🚪 Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
